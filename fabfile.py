@@ -24,6 +24,9 @@ def remote_deploy():
     virtual_env_dir = '/var/local/virtualenvs/{}'.format(PROJECT_NAME)
     depkey_remote_location = '~/deployment.key'
     git_ssh_cmd = 'GIT_SSH_COMMAND="ssh -i {} -o StrictHostKeyChecking=no"'.format(depkey_remote_location)
+    supervisord_confd_dir = '/etc/supervisor/conf.d/'
+    celery_beat_file = '{}/celery_beat.conf'.format(supervisord_confd_dir)
+    celery_worker_file = '{}/celery_worker.conf'.format(supervisord_confd_dir)
 
     if not exists(depkey_remote_location):
         put("./deployment.key", "~/")
@@ -55,5 +58,15 @@ def remote_deploy():
 
         sudo('source {}/bin/activate && python manage.py collectstatic --noinput'.format(virtual_env_dir),
              user="www-data")
+
+        # Copy the configuration files for the worker and the beat
+        if not exists(celery_beat_file):
+            put('./extras/celery_beat.conf', celery_beat_file, mode=0o600, use_sudo=True)
+
+        if not exists(celery_worker_file):
+            put('./extras/celery_worker.conf', celery_worker_file, mode=0o600, use_sudo=True)
+
+        # Reload the config and restart all the processes
+        sudo('supervisorctl update')
 
         sudo('service apache2 restart')

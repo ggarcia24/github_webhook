@@ -9,7 +9,7 @@ from github import Github, UnknownObjectException
 
 from .models import WebhookTransaction, PullRequestTransactionResult, RepositoryFilePattern
 
-_github_client = Github(login_or_token=settings.GITHUB_TOKEN)
+_github_client = Github(login_or_token=settings.GITHUB_TOKEN, base_url=settings.GITHUB_API_URL)
 
 
 class UserNotAllowedException(Exception):

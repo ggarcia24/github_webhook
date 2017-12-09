@@ -14,6 +14,7 @@ import os
 
 import dj_database_url as dburl
 from decouple import config
+from github.MainClass import DEFAULT_BASE_URL
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -125,7 +126,10 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # Celery configuration
+BROKER_URL = config('CELERY_BROKER_URL', default='amqp://localhost')
 CELERY_RESULT_BACKEND = 'django-db'
+CELERY_TIMEZONE = TIME_ZONE
 
 # Github Token
-GITHUB_TOKEN = config("GITHUB_TOKEN")
+GITHUB_API_URL = config('GITHUB_API_URL', default=DEFAULT_BASE_URL)
+GITHUB_TOKEN = config('GITHUB_TOKEN')
