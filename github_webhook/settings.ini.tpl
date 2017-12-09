@@ -1,0 +1,6 @@
+[settings]
+DEBUG=False
+SECRET_KEY=<-
+DATABASE_URL=<-
+TIME_ZONE=UTC
+GITHUB_TOKEN=<-
